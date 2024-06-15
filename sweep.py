@@ -27,6 +27,7 @@ class Sweep(Base):
         input_port: int,
         dither: bool = True,
         num_skip: int = 0,
+        electrical_delay = 0
     ) -> None:
         self.freq_center = freq_center
         self.freq_span = freq_span
@@ -37,7 +38,7 @@ class Sweep(Base):
         self.input_port = input_port
         self.dither = dither
         self.num_skip = num_skip
-
+        self.electrical_delay = electrical_delay
         self.freq_arr = None  # replaced by run
         self.resp_arr = None  # replaced by run
 
@@ -56,6 +57,9 @@ class Sweep(Base):
             lck.hardware.set_adc_attenuation(self.input_port, self.ADC_ATTENUATION)
             lck.hardware.set_dac_current(self.output_port, self.DAC_CURRENT)
             lck.hardware.set_inv_sinc(self.output_port, 0)
+            # sample_rate = lck.Lockin.dac_fsample
+            # print(sample_rate)
+            # lck.hardware.set_output_delay(port = self.output_port, delay = self.electrical_delay) # To set delay
 
             # tune frequencies
             _, self.df = lck.tune(0.0, self.df)
